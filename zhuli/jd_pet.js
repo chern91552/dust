@@ -117,7 +117,7 @@ async function jdPet() {
         option['open-url'] = "openApp.jdMobile://";
         $.msg($.name, ``, `【京东账号${$.index}】${$.nickName || $.UserName}\n【提醒⏰】已领取红包,但未继续领养新的物品\n请去京东APP或微信小程序查看\n点击弹窗即达`, option);
         if ($.isNode()) {
-          await notify.sendNotify(`${$.name} - 账号${$.index} - ${$.nickName || $.UserName}奖品已可领取`, `京东账号${$.index} ${$.nickName}\n已领取红包,但未继续领养新的物品`);
+          //await notify.sendNotify(`${$.name} - 账号${$.index} - ${$.nickName || $.UserName}奖品已可领取`, `京东账号${$.index} ${$.nickName}\n已领取红包,但未继续领养新的物品`);
         }
         return
       }
@@ -135,13 +135,13 @@ async function jdPet() {
         return
       }
       $.taskInfo = $.taskInit.result;
-
+/*
       await petSport();//遛弯
       await slaveHelp();//助力好友
       await masterHelpInit();//获取助力的信息
       await doTask();//做日常任务
       await feedPetsAgain();//再次投食
-      await energyCollect();//收集好感度
+      await energyCollect();//收集好感度*/
       await showMsg();
       console.log('全部任务完成, 如果帮助到您可以点下🌟STAR鼓励我一下, 明天见~');
     } else if (initPetTownRes.code === '0'){

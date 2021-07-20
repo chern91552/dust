@@ -85,7 +85,7 @@ async function main() {
     await getTaskDetail(-1)
     await getTaskDetail(16)
     await getTaskDetail(6)
-    for(let i = 0 ; i < 5; ++i){
+   /* for(let i = 0 ; i < 5; ++i){
       $.canDo = false
       await getTaskDetail()
       if(!$.canDo) break
@@ -94,7 +94,7 @@ async function main() {
     await collectScore()
     await helpFriends()
     await getTaskDetail(22);
-    await getTaskDetail(-1)
+    await getTaskDetail(-1)*/
   } catch (e) {
     $.logErr(e)
   }

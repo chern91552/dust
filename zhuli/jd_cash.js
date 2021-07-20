@@ -29,7 +29,7 @@ let jdNotify = true;//是否关闭通知，false打开通知推送，true关闭�
 let cookiesArr = [], cookie = '', message;
 let helpAuthor = true;
 const randomCount = $.isNode() ? 5 : 5;
-let cash_exchange = false;//是否消耗2元红包兑换200京豆，默认否
+let cash_exchange = true;//是否消耗2元红包兑换200京豆，默认是
 const inviteCodes = ['']
 let myInviteCode;
 if ($.isNode()) {
@@ -86,9 +86,9 @@ async function jdCash() {
   $.signMoney = 0;
   await index()
   await shareCodesFormat()
-  await helpFriends()
-  await getReward()
-  await getReward('2');
+//  await helpFriends()
+//  await getReward()
+ // await getReward('2');
   $.exchangeBeanNum = 0;
   cash_exchange = $.isNode() ? (process.env.CASH_EXCHANGE ? process.env.CASH_EXCHANGE : `${cash_exchange}`) : ($.getdata('cash_exchange') ? $.getdata('cash_exchange') : `${cash_exchange}`);
   if (cash_exchange === 'true') {
@@ -152,7 +152,7 @@ function index(info=false) {
               }
               // $.log(`shareDate: ${$.shareDate}`)
               // console.log(helpInfo)
-              for(let task of data.data.result.taskInfos){
+    /*          for(let task of data.data.result.taskInfos){
                 if (task.type === 4) {
                   for (let i = task.doTimes; i < task.times; ++i) {
                     console.log(`去做${task.name}任务 ${i+1}/${task.times}`)
@@ -174,7 +174,7 @@ function index(info=false) {
                     await $.wait(5000)
                   }
                 }
-              }
+              }*/
             }
           }
         }

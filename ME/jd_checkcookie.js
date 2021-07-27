@@ -4,7 +4,7 @@ export tswb=""   ##自定义变量 自定义发送的文本内容 如 老弟 你
 // [task_local]
 // */60 * * * *
 // 自己复制定时
-//修改自柠檬ck，合并短消息
+//修改自柠檬ck，合并cookie过期短消息
 const $ = new Env('CK检测');
 const notify = $.isNode() ? require('./sendNotify') : '';
 //Node.js用户请在jdCookie.js处填写京东ck;

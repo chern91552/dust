@@ -1,4 +1,3 @@
-//检测到cookie失效通知，并且通知长度小于100，取消发送pushplus消息
 /**
  * sendNotify 推送通知功能
  * @param text 通知头
@@ -175,7 +174,7 @@ if (process.env.PUSH_PLUS_USER) {
  * @param author 作者仓库等信息  例：`本脚本免费使用 By：xxxx`
  * @returns {Promise<unknown>}
  */
-async function sendNotify(text, desp, params = {}, author = '\n\n仅供用于学习') {
+async function sendNotify(text, desp, params = {}, author = '\n\n') {
   //提供6种通知
   desp += author;//增加作者信息，防止被贩卖等
   let remarks = '';
@@ -189,6 +188,8 @@ async function sendNotify(text, desp, params = {}, author = '\n\n仅供用于学
       if (account['pt_pin'] && account['remarks']){
         text = text.replace(new RegExp(account['pt_pin'], 'gm'), account['remarks'])
         desp = desp.replace(new RegExp(account['pt_pin'], 'gm'), account['remarks'])
+       // console.log(account['pt_pin']+account['remarks']+'\n')
+
       }
     }
   }

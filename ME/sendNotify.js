@@ -1,5 +1,4 @@
 //检测到cookie失效通知，并且通知长度小于100，取消发送pushplus消息
-
 /**
  * sendNotify 推送通知功能
  * @param text 通知头

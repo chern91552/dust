@@ -195,6 +195,7 @@ async function sendNotify(text, desp, params = {}, author = '\n\n') {
     for (const user of users) {
       if (user.pt_pin && user.nickName && user.remark) {
         desp = desp.replace(new RegExp(`${user.pt_pin}|${user.nickName}`, 'gm'), user.remark);
+	text = text.replace(new RegExp(`${user.pt_pin}|${user.nickName}`, 'gm'), user.remark);
       }
     }
 //console.log(text.indexOf("已失效")+`检测到cookie失效通知\n`+desp.indexOf("已失效"));

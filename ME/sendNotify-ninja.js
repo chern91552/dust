@@ -1,4 +1,10 @@
 /*
+go-cq推送cookie失效自动艾特所有人
+检测到cookie失效通知，并且通知长度小于100并且不是ck检测脚本时，取消发送消息
+环境变量NOTIFY_SKIP_LIST为通知黑名单，用&连接，包含黑名单的信息都不会发出通知
+
+*/
+/*
  * @Author: lxk0301 https://gitee.com/lxk0301
  * @Date: 2020-08-19 16:12:40
  * @Last Modified by: whyour
@@ -21,7 +27,7 @@ const timeout = 15000; //超时时间(单位毫秒)
 let GOBOT_URL = ''; // 推送到个人QQ: http://127.0.0.1/send_private_msg  群：http://127.0.0.1/send_group_msg
 let GOBOT_TOKEN = ''; //访问密钥
 let GOBOT_QQ = ''; // 如果GOBOT_URL设置 /send_private_msg 则需要填入 user_id=个人QQ 相反如果是 /send_group_msg 则需要填入 group_id=QQ群
-let GOBOT_QQatall = '';//艾特所有人
+
 // =======================================微信server酱通知设置区域===========================================
 //此处填你申请的SCKEY.
 //(环境变量名 PUSH_KEY)
@@ -92,9 +98,6 @@ if (process.env.GOBOT_TOKEN) {
 }
 if (process.env.GOBOT_QQ) {
   GOBOT_QQ = process.env.GOBOT_QQ;
-}
-if (process.env.GOBOT_QQatall) {
-  GOBOT_QQ = process.env.GOBOT_QQatall;
 }
 
 if (process.env.PUSH_KEY) {
@@ -177,10 +180,10 @@ if (process.env.PUSH_PLUS_USER) {
 async function sendNotify(text, desp, params = {}, author = '\n\n') {
   try {
     const notifySkipList = process.env.NOTIFY_SKIP_LIST ? process.env.NOTIFY_SKIP_LIST.split('&') : [];
-    const titleIndex = notifySkipList.findIndex((item) => item === text);
+    const titleIndex = notifySkipList.findIndex((item) => desp.indexOf(item)!=-1||text.indexOf(item)!=-1);//item === text);
 
     if (titleIndex !== -1) {
-      console.log(`\n${text} 在推送黑名单中，已跳过推送\n`);
+      console.log(`\n****${text}**${desp}**** 在推送黑名单中，已跳过推送\n`);
       return;
     }
 
@@ -194,8 +197,9 @@ async function sendNotify(text, desp, params = {}, author = '\n\n') {
         desp = desp.replace(new RegExp(`${user.pt_pin}|${user.nickName}`, 'gm'), user.remark);
       }
     }
-
-if (desp.indexOf("\u5df2\u5931\u6548")&&desp.length<100) {
+//console.log(text.indexOf("已失效")+`检测到cookie失效通知\n`+desp.indexOf("已失效"));
+//检测到cookie失效通知，并且通知长度小于100并且不是ck检测脚本时，取消发送消息
+if ((text.indexOf("已失效") != -1||desp.indexOf("已失效")!=-1)&&desp.length<100&&(text.indexOf("检测") == -1)) {
 		  console.log(`检测到cookie失效通知，并且通知长度小于100，取消发送消息\n`);
 		  //console.log(desp.length);
 		console.log('***********\n'+desp+'\n*********\n');
@@ -227,15 +231,15 @@ if (desp.indexOf("\u5df2\u5931\u6548")&&desp.length<100) {
 }
 
 function gobotNotify(text, desp, time = 2100) {
-if(GOBOT_QQatall){
-console.log(`艾特所有人\n`);
+if(text.indexOf("已失效") != -1&&text.indexOf("检测") != -1){
+console.log(text.indexOf("\u5df2\u5931\u6548")+`艾特所有人\n`);
 text='[CQ:at,qq=all]\n'+text;
 }
   return new Promise((resolve) => {
     if (GOBOT_URL) {
       const options = {
         url: `${GOBOT_URL}?access_token=${GOBOT_TOKEN}&${GOBOT_QQ}`,
-        body: `message=${text}\n${desp}`,
+        body: `message=${text}[CQ:face,id=317]\n${desp}`,
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
         },
@@ -771,7 +775,7 @@ function pushPlusNotify(text, desp) {
         timeout
       }
 	  console.log(desp.length);
-	  if (desp.indexOf("cookie")&&desp.indexOf("\u5df2\u5931\u6548")&&desp.length<100) {
+	  if (desp.indexOf("cookie")!==-1&&desp.indexOf("\u5df2\u5931\u6548")!==-1&&desp.length<100) {
 		  console.log(`检测到cookie失效通知，并且通知长度小于100，取消发送pushplus消息\n`);
 		  console.log(desp.length);
 		  console.log(`cookie\u5df2\u5931\u6548****cookie已失效\n`);

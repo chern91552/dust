@@ -2,6 +2,15 @@
 go-cq推送cookie失效自动艾特所有人
 检测到cookie失效通知，并且通知长度小于100并且不是ck检测脚本时，取消发送消息
 环境变量NOTIFY_SKIP_LIST为通知黑名单，用&连接，包含黑名单的信息都不会发出通知
+例如
+
+#跳过cookie失效通知防止被轰炸
+export NOTIFY_SKIP_LIST="已失效&网络错误&任务执行异常"
+ case $1 in
+    *jd_checkcookie*)
+    	export NOTIFY_SKIP_LIST=""
+        ;;
+esac
 
 */
 /*

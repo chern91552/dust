@@ -34,7 +34,9 @@ const JD_API_HOST = 'https://api.m.jd.com/client.action';
 !(async () => {
 
 if (importantnotify) {
+      console.log(`\n******重要通知******\n${importantnotify}*********\n`);
         await notify.sendNotify("重要通知", `${importantnotify}\n` );
+
         //await notify.sendNotify(`telegram`, `${allMessages}\n${importantnotify}` )
     }
 })()

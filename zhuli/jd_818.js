@@ -63,7 +63,7 @@ let nowTime = new Date().getTime() + new Date().getTimezoneOffset()*60*1000 + 8*
     if ($.isNode()) await notify.sendNotify($.name + '活动已结束', `请删除此脚本\n咱江湖再见`);
     return
   }
-  await readShareCode();
+ // await readShareCode();
   // await requireConfig();
   for (let i = 0; i < cookiesArr.length; i++) {
     if (cookiesArr[i]) {
@@ -127,19 +127,19 @@ let nowTime = new Date().getTime() + new Date().getTimezoneOffset()*60*1000 + 8*
 
 async function JD818() {
   try {
-    await indexInfo();//获取任务
+    //await indexInfo();//获取任务
     await supportList();//助力情况
     await getHelp();//获取邀请码
-    if ($.blockAccount) return
-    await indexInfo(true);//获取任务
-    await doHotProducttask();//做热销产品任务
-    await doBrandTask();//做品牌手机任务
-    await doBrowseshopTask();//逛好货街，做任务
+   // if ($.blockAccount) return
+    //await indexInfo(true);//获取任务
+   // await doHotProducttask();//做热销产品任务
+   // await doBrandTask();//做品牌手机任务
+   // await doBrowseshopTask();//逛好货街，做任务
     // await doHelp();
-    await myRank();//领取往期排名奖励
-    await getListRank();
-    await getListIntegral();
-    await getListJbean();
+    //await myRank();//领取往期排名奖励
+   // await getListRank();
+   // await getListIntegral();
+   // await getListJbean();
     await check();//查询抽奖记录(未兑换的，发送提醒通知);
     await showMsg()
   } catch (e) {

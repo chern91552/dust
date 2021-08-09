@@ -204,18 +204,24 @@ async function sendNotify(text, desp, params = {}, author = '\n\n') {
     for (const user of users) {
       if (user.pt_pin && user.nickName && user.remark) {
         desp = desp.replace(new RegExp(`${user.pt_pin}|${user.nickName}`, 'gm'), user.remark);
-	text = text.replace(new RegExp(`${user.pt_pin}|${user.nickName}`, 'gm'), user.remark);
+        text = text.replace(new RegExp(`${user.pt_pin}|${user.nickName}`, 'gm'), user.remark);
       }
     }
 //console.log(text.indexOf("已失效")+`检测到cookie失效通知\n`+desp.indexOf("已失效"));
 //检测到cookie失效通知，并且通知长度小于100并且不是ck检测脚本时，取消发送消息
-if ((text.indexOf("已失效") != -1||desp.indexOf("已失效")!=-1)&&desp.length<100&&(text.indexOf("检测") == -1)) {
-		  console.log(`检测到cookie失效通知，并且通知长度小于100，取消发送消息\n`);
-		  //console.log(desp.length);
-		console.log('***********\n'+desp+'\n*********\n');
-		  //console.log(`cookie\u5df2\u5931\u6548****cookie已失效\n`);
-		  return;
-	  }
+    if ((text.indexOf("已失效") != -1||desp.indexOf("已失效")!=-1)&&desp.length<100&&(text.indexOf("检测") == -1)) {
+	console.log(`检测到cookie失效通知，并且通知长度小于100，取消发送消息\n`);
+	//console.log(desp.length);
+	console.log('***********\n'+desp+'\n*********\n');
+	//console.log(`cookie\u5df2\u5931\u6548****cookie已失效\n`);
+	return;
+	}
+
+if(desp.indexOf("已上线")!=-1){
+console.log(`检测到ninja上线通知，仅发送tg消息\n`);
+ tgBotNotify(text, desp); //telegram 机器人
+return;
+}
 
   } catch (error) {
     console.error(error);
@@ -241,7 +247,7 @@ if ((text.indexOf("已失效") != -1||desp.indexOf("已失效")!=-1)&&desp.lengt
 }
 
 function gobotNotify(text, desp, time = 2100) {
-if(text.indexOf("已失效") != -1&&text.indexOf("检测") != -1){
+if((text.indexOf("已失效") != -1&&text.indexOf("检测") != -1)||(text.indexOf("重要通知"))!=-1){
 console.log(text.indexOf("\u5df2\u5931\u6548")+`艾特所有人\n`);
 text='[CQ:at,qq=all]\n'+text;
 }

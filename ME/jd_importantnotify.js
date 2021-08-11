@@ -16,8 +16,8 @@ const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 let cookiesArr = [], cookie = '', message;
 let allMessage = '';
 let allMessages = '';
-let importantnotify = '京东抽奖';//变量 你想要自定义发送的文本内容 如 老弟 你的CK实效了 打开*******5701 扫码更新
-let importantnotifytitle= '京东账号1抽到实物-小米mix4，请到app中填写地址';
+let importantnotify = '京东账号1抽到实物-小米mix4，请到app中填写地址';//变量 你想要自定义发送的文本内容 如 老弟 你的CK实效了 打开*******5701 扫码更新
+let importantnotifytitle= '京东抽奖';
 if (process.env.importantnotify) {
   importantnotify = process.env.importantnotify;
 }
@@ -39,7 +39,7 @@ const JD_API_HOST = 'https://api.m.jd.com/client.action';
 
 if (importantnotify) {
       console.log(`\n******${importantnotifytitle}******\n${importantnotify}*********\n`);
-        await notify.sendNotify("${importantnotifytitle}", `${importantnotify}\n` );
+        await notify.sendNotify(`${importantnotifytitle}`, `${importantnotify}\n` );
 
         //await notify.sendNotify(`telegram`, `${allMessages}\n${importantnotify}` )
     }

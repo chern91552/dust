@@ -1,6 +1,7 @@
 /*
 用于docker向用户发送消息
-export importantnotify=""   ##自定义变量 自定义发送的文本内容 如 老弟 你的CK失效了 打开*******5701 扫码更新
+export importantnotifytitle=""   ##自定义通知消息标题
+export importantnotify=""   ##自定义通知消息 自定义发送的文本内容 如 老弟 你的CK失效了 打开*******5701 扫码更新
  */
 // [task_local]
 // */60 * * * *
@@ -15,10 +16,13 @@ const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 let cookiesArr = [], cookie = '', message;
 let allMessage = '';
 let allMessages = '';
-let importantnotify = '';//变量 你想要自定义发送的文本内容 如 老弟 你的CK实效了 打开*******5701 扫码更新
-
+let importantnotify = '京东抽奖';//变量 你想要自定义发送的文本内容 如 老弟 你的CK实效了 打开*******5701 扫码更新
+let importantnotifytitle= '京东账号1抽到实物-小米mix4，请到app中填写地址';
 if (process.env.importantnotify) {
   importantnotify = process.env.importantnotify;
+}
+if (process.env.importantnotifytitle) {
+  importantnotify = process.env.importantnotifytitle;
 }
 
 if ($.isNode()) {
@@ -34,8 +38,8 @@ const JD_API_HOST = 'https://api.m.jd.com/client.action';
 !(async () => {
 
 if (importantnotify) {
-      console.log(`\n******重要通知******\n${importantnotify}*********\n`);
-        await notify.sendNotify("重要通知", `${importantnotify}\n` );
+      console.log(`\n******${importantnotifytitle}******\n${importantnotify}*********\n`);
+        await notify.sendNotify("${importantnotifytitle}", `${importantnotify}\n` );
 
         //await notify.sendNotify(`telegram`, `${allMessages}\n${importantnotify}` )
     }

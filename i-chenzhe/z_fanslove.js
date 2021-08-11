@@ -1,8 +1,8 @@
 /*
 粉丝互动
 类似于京东抽奖机，各个店铺的粉丝互动活动。
-有看到新活动可以私信我添加活动ID。 GitHub@i-chenzhe
-新手写脚本，难免有bug，能用且用。
+有看到新活动可以私信我添加活动ID。 GitHub@i-chenzhe 
+新手写脚本，难免有bug，能用且用。 
 
 更新地址：https://share.r2ray.com/dust/i-chenzhe/z_fanslove.js
 ============Quantumultx===============

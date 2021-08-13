@@ -11,8 +11,8 @@ token获取途径：
 脚本里面有内置提供的friendPin，如果你没有修改脚本或者BoxJs处填写自己的互助码，会默认给脚本内置的助力。
 
 docker 设置环境变量 JOY_RUN_HELP_MYSELF 为true,则开启账号内部互助.默认关闭(即给脚本作者内置的助力).
-
-已知bug：非第一次运行脚本时，可能无法判断token过期
+分别读取chern91552、zero205、he1pu仓库token并判断是否有效
+已知bug：非第一次运行脚本时，可能无法判断token是否有效
 
 [MITM]
 hostname = draw.jdfcloud.com

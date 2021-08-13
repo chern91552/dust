@@ -9,7 +9,6 @@ token获取途径：
 1、微信搜索'来客有礼'小程序,登陆京东账号，点击底部的'我的'或者'发现'两处地方,即可获取Token，脚本运行提示token失效后，继续按此方法获取即可
 2、或者每天去'来客有礼'小程序->宠汪汪里面，领狗粮->签到领京豆 也可获取Token(此方法每天只能获取一次)
 脚本里面有内置提供的friendPin，如果你没有修改脚本或者BoxJs处填写自己的互助码，会默认给脚本内置的助力。
-
 docker 设置环境变量 JOY_RUN_HELP_MYSELF 为true,则开启账号内部互助.默认关闭(即给脚本作者内置的助力).
 
 分别读取chern91552、zero205、he1pu仓库token并判断是否有效
@@ -27,7 +26,7 @@ hostname = draw.jdfcloud.com
 ===================Quantumult X=====================
 [task_local]
 # 宠汪汪邀请助力与赛跑助力
-45 12,14,19 * * * jd_joy_run.js, tag=宠汪汪邀请助力与赛跑助力, img-url=https://raw.githubusercontent.com/58xinian/icon/master/jdcww.png, enabled=true
+45 10,14,19 * * * jd_joy_run.js, tag=宠汪汪邀请助力与赛跑助力, img-url=https://raw.githubusercontent.com/58xinian/icon/master/jdcww.png, enabled=true
 [rewrite_local]
 # 宠汪汪助力更新Token
 ^https:\/\/draw\.jdfcloud\.com(\/mirror)?\/\/api\/user\/addUser\?code= url script-response-body jd_joy_run.js
@@ -41,7 +40,7 @@ http-response ^https:\/\/draw\.jdfcloud\.com(\/mirror)?\/\/api\/user\/addUser\?c
 http-request ^https:\/\/draw\.jdfcloud\.com(\/mirror)?\/\/api\/user\/user\/detail\?openId= script-path=jd_joy_run.js, timeout=3600, tag=宠汪汪助力获取Token
 */
 const $ = new Env('宠汪汪赛跑');
-const zooFaker = require('./JDJRValidator_Pure');
+const zooFaker = require('./utils/JDJRValidator_Pure');
 $.get = zooFaker.injectToRequest2($.get.bind($));
 $.post = zooFaker.injectToRequest2($.post.bind($));
 //宠汪汪赛跑所需token，默认读取作者服务器的
@@ -592,9 +591,15 @@ async function testtoken(){
     process.env.JOY_RUN_TOKEN && tokenarr.push(process.env.JOY_RUN_TOKEN);
     process.env.JOY_RUN_TOKEN && console.log(`从环境变量获取到的token为${process.env.JOY_RUN_TOKEN}`);
     token= await getNetToken('https://raw.githubusercontent.com/chern91552/updateteam/master/ShareCodes/joy_run.json');
+    if(!token){
+    	token= await getNetToken('https://raw.fastgit.org/chern91552/updateteam/master/ShareCodes/joy_run.json');
+    }
     console.log(`从chern91552仓库获取到的token为${token}`);
     tokenarr[tokenarr.length]=token;
     token= await getNetToken('https://raw.githubusercontent.com/zero205/updateTeam/main/shareCodes/lkyl.json');
+    if(!token){
+    	token= await getNetToken('https://raw.fastgit.org/zero205/updateTeam/main/shareCodes/lkyl.json');
+    }
     console.log(`从zero205仓库获取到的token为${token}`);
     tokenarr[tokenarr.length]=token;
     let readTokenRes = await getNetToken('https://raw.githubusercontent.com/he1pu/JDHelp/main/joy_run_token.json');
@@ -636,7 +641,7 @@ function getNetToken(url) {
     return new Promise(async resolve => {
         const options = {
             "url": `${url}`,
-            "timeout": 10000,
+            "timeout": 15000,
             "headers": {
                 "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1 Edg/87.0.4280.88"
             }
@@ -647,7 +652,7 @@ function getNetToken(url) {
                 https: tunnel.httpsOverHttp({
                     proxy: {
                         host: process.env.TG_PROXY_HOST,
-                        port: process.env.TG_PROXY_PORT * 1
+                        port: process.env.TG_PROXY_PORT 
                     }
                 })
             }

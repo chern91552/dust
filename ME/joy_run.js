@@ -12,6 +12,8 @@ token获取途径：
 
 docker 设置环境变量 JOY_RUN_HELP_MYSELF 为true,则开启账号内部互助.默认关闭(即给脚本作者内置的助力).
 
+已知bug：非第一次运行脚本时，可能无法判断token过期
+
 [MITM]
 hostname = draw.jdfcloud.com
 
@@ -38,13 +40,15 @@ http-response ^https:\/\/draw\.jdfcloud\.com(\/mirror)?\/\/api\/user\/addUser\?c
 http-request ^https:\/\/draw\.jdfcloud\.com(\/mirror)?\/\/api\/user\/user\/detail\?openId= script-path=jd_joy_run.js, timeout=3600, tag=宠汪汪助力获取Token
 */
 const $ = new Env('宠汪汪赛跑');
-const zooFaker = require('./utils/JDJRValidator_Pure');
+const zooFaker = require('./JDJRValidator_Pure');
 $.get = zooFaker.injectToRequest2($.get.bind($));
 $.post = zooFaker.injectToRequest2($.post.bind($));
 //宠汪汪赛跑所需token，默认读取作者服务器的
 //需自行抓包，宠汪汪小程序获取token，点击`发现`或`我的`，寻找`^https:\/\/draw\.jdfcloud\.com(\/mirror)?\/\/api\/user\/user\/detail\?openId=`获取token
 let jdJoyRunToken = '';
-
+let LKYL_DATA ='';
+let combatDetailRes='';
+let testshow='';
 const isRequest = typeof $request != "undefined"
 const JD_BASE_API = `https://draw.jdfcloud.com//pet`;
 //Node.js用户请在jdCookie.js处填写京东ck;
@@ -114,23 +118,23 @@ async function main() {
     $.msg($.name, '【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/bean/signIndex.action', {"open-url": "https://bean.m.jd.com/bean/signIndex.action"});
     return;
   }
-const readTokenRes = ''
-  await updateToken()
+//const readTokenRes = ''
+await testtoken();
+  //await updateToken()
   // const readTokenRes = await readToken();
-  if (readTokenRes && readTokenRes.code === 200) {
+  /*if (readTokenRes && readTokenRes.code === 200) {
     $.LKYLToken = readTokenRes.data[0] || ($.isNode() ? (process.env.JOY_RUN_TOKEN ? process.env.JOY_RUN_TOKEN : jdJoyRunToken) : ($.getdata('jdJoyRunToken') || jdJoyRunToken));
   } else {
     $.LKYLToken = $.isNode() ? (process.env.JOY_RUN_TOKEN ? process.env.JOY_RUN_TOKEN : jdJoyRunToken) : ($.getdata('jdJoyRunToken') || jdJoyRunToken);
-  }
-
+  }*/
+testshow='true';
   if (!$.LKYLToken) {
     $.msg($.name, '【提示】请先获取来客有礼宠汪汪token', "iOS用户微信搜索'来客有礼'小程序\n点击底部的'发现'Tab\n即可获取Token");
-    console.log(`尝试获取【chern91552】仓库来客有礼token，如失效请提issues提醒更新\n`)
-    $.LKYLToken = $.lkyl
-    // return;
+     return;
   }
   console.log(`打印token：${$.LKYLToken ? $.LKYLToken : '暂无token'}\n`)
-  for (let i = 0; i < cookiesArr.length; i++) {
+  if($.LKYLToken){
+      for (let i = 0; i < cookiesArr.length; i++) {
     if (cookiesArr[i]) {
       $.validate = '';
       // const zooFaker = require('./utils/JDJRValidator_Pure');
@@ -144,7 +148,7 @@ const readTokenRes = ''
           run_pins = [[...run_pins].join(',')];
           invite_pins = run_pins;
         } else {
-          console.log(`\n赛跑先给作者两个固定的pin进行助力,然后从账号内部与剩下的固定位置合并后随机抽取进行助力\n如需自己账号内部互助,设置环境变量 JOY_RUN_HELP_MYSELF 为true,则开启账号内部互助\n`)
+          console.log(`\n赛跑先给作者固定的pin进行助力,然后从账号内部与剩下的固定位置合并后随机抽取进行助力\n如需自己账号内部互助,设置环境变量 JOY_RUN_HELP_MYSELF 为true,则开启账号内部互助\n`)
           run_pins = run_pins[0].split(',')
           Object.values(jdCookieNode).filter(item => item.match(/pt_pin=([^; ]+)(?=;?)/)).map(item => run_pins.push(decodeURIComponent(item.match(/pt_pin=([^; ]+)(?=;?)/)[1])))
           run_pins = [...new Set(run_pins)];
@@ -180,6 +184,7 @@ const readTokenRes = ''
       }
       await showMsg();
     }
+  }
   }
   $.done()
 }
@@ -280,10 +285,10 @@ function readToken() {
     })
   })
 }
-function updateToken() {
+/*function updateToken() {
   return new Promise(resolve => {
       $.get({
-          url: "https://raw.fastgit.org/chern91552/updateteam/master/ShareCodes/joy_run.json",
+          "url": 'https://raw.githubusercontent.com/chern91552/updateteam/master/ShareCodes/joy_run.json',
           headers: {
               "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1 Edg/87.0.4280.88"
           }
@@ -293,7 +298,7 @@ function updateToken() {
                   console.log(`${JSON.stringify(err)}`);
                   console.log(`${$.name} API请求失败，请检查网路重试`);
               } else {
-                  $.lkyl = JSON.parse(data);
+                  $.LKYLToken = JSON.parse(data);
               }
           } catch (e) {
               $.logErr(e, resp)
@@ -303,6 +308,7 @@ function updateToken() {
       })
   })
 }
+*/
 function showMsg() {
   return new Promise(async resolve => {
     if ($.inviteReward || $.runReward) {
@@ -445,22 +451,23 @@ function helpInviteFriend(friendPin) {
 }
 //赛跑助力
 async function run(run_pins) {
-  console.log(`账号${$.index} [${UserName}] 给下面名单的人进行赛跑助力\n${(run_pins.map(item => item.trim()))}\n`);
+  testshow &&console.log(`账号${$.index} [${UserName}] 给下面名单的人进行赛跑助力\n${(run_pins.map(item => item.trim()))}\n`);
   for (let item of run_pins.map(item => item.trim())) {
-    console.log(`\n账号${$.index} [${UserName}] 开始给好友 [${item}] 进行赛跑助力`)
+    (!testshow)&&(UserName === item)&&(item=run_pins[1]);
+    testshow &&console.log(`\n账号${$.index} [${UserName}] 开始给好友 [${item}] 进行赛跑助力`)
     if (UserName === item) {
       console.log(`自己账号，跳过`);
       continue
     }
-    const combatDetailRes = await combatDetail(item);
+    combatDetailRes = await combatDetail(item);//const combatDetailRes = await combatDetail(item);
     const { petRaceResult } = combatDetailRes.data;
-    console.log(`petRaceResult ${petRaceResult}`);
+    testshow &&console.log(`petRaceResult ${petRaceResult}`);
     if (petRaceResult === 'help_full') {
-      console.log('您的赛跑助力机会已耗尽');
+      testshow &&console.log('您的赛跑助力机会已耗尽');
       break;
     } else if (petRaceResult === 'can_help') {
-      console.log(`开始赛跑助力好友 ${item}`)
-      const LKYL_DATA = await combatHelp(item);
+      testshow &&console.log(`开始赛跑助力好友 ${item}`)
+      LKYL_DATA = await combatHelp(item);//const LKYL_DATA = await combatHelp(item);
       if (LKYL_DATA.errorCode === 'L0001' && !LKYL_DATA.success) {
         console.log('来客有礼宠汪汪token失效');
         $.setdata('', 'jdJoyRunToken');
@@ -499,7 +506,7 @@ function combatHelp(friendPin) {
           $.log('API请求失败')
           $.logErr(JSON.stringify(err));
         } else {
-          $.log(`赛跑助力结果${data}`);
+          testshow &&$.log(`赛跑助力结果${data}`);
           data = JSON.parse(data);
           // {"errorCode":"help_ok","errorMessage":null,"currentTime":1600479266133,"data":{"rewardNum":5,"helpStatus":"help_ok","newUser":false},"success":true}
           if (data.errorCode === 'help_ok' && data.data.helpStatus === 'help_ok') {
@@ -573,7 +580,94 @@ function getRandomArrayElements(arr, count) {
   }
   return shuffled.slice(min);
 }
-
+async function testtoken(){
+    var tokenarr=new Array();
+    let token='';
+    let new_run_pins=['jd_5936a981e2178'];
+    item=new_run_pins[0];
+    cookie = cookiesArr[0];
+    UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1])
+    $.index = 1;
+    process.env.JOY_RUN_TOKEN && tokenarr.push(process.env.JOY_RUN_TOKEN);
+    process.env.JOY_RUN_TOKEN && console.log(`从环境变量获取到的token为${process.env.JOY_RUN_TOKEN}`);
+    token= await getNetToken('https://raw.githubusercontent.com/chern91552/updateteam/master/ShareCodes/joy_run.json');
+    console.log(`从chern91552仓库获取到的token为${token}`);
+    tokenarr[tokenarr.length]=token;
+    token= await getNetToken('https://raw.githubusercontent.com/zero205/updateTeam/main/shareCodes/lkyl.json');
+    console.log(`从zero205仓库获取到的token为${token}`);
+    tokenarr[tokenarr.length]=token;
+    let readTokenRes = await getNetToken('https://raw.githubusercontent.com/he1pu/JDHelp/main/joy_run_token.json');
+    readTokenRes && (readTokenRes.code === 200)&&(tokenarr.length=tokenarr.push(readTokenRes.data[0]));
+    /*console.log(`tokenarr.length=${tokenarr.length}`);
+    console.log(`tokenarr[0]=${tokenarr[0]}`);
+    console.log(`tokenarr[1]=${tokenarr[1]}`);
+    console.log(`tokenarr[2]=${tokenarr[2]}`);
+    console.log(`tokenarr[3]=${tokenarr[3]}`);*/
+    for (let itoken = 0; itoken < tokenarr.length; itoken++){
+        if(tokenarr[itoken])
+        {
+            console.log(`测试第${itoken+1}个token${tokenarr[itoken]}是否有效`);
+            //testshow='true';
+            //throw new Error('exit');
+            $.LKYLToken =tokenarr[itoken];
+            await run(new_run_pins);
+            const { petRaceResult } = combatDetailRes.data;
+            if (petRaceResult === 'can_help'){
+                LKYL_DATA = await combatHelp(item);
+                if (LKYL_DATA.errorCode === 'L0001' && !LKYL_DATA.success){
+                    console.log('来客有礼宠汪汪token失效');
+                    $.LKYLToken ='';
+                    continue
+                }
+            }
+            else if(petRaceResult === 'help_full' || petRaceResult === 'participate'){
+                    console.log(`无法判断token是否失效，默认有效，若失效可自行修改环境变量JOY_RUN_TOKEN`);
+                    return;
+                }
+            console.log(`宠汪汪token可用`);
+            return;
+            
+        }
+    }
+}
+    
+function getNetToken(url) {
+    return new Promise(async resolve => {
+        const options = {
+            "url": `${url}`,
+            "timeout": 10000,
+            "headers": {
+                "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1 Edg/87.0.4280.88"
+            }
+        };
+        if ($.isNode() && process.env.TG_PROXY_HOST && process.env.TG_PROXY_PORT) {
+            const tunnel = require("tunnel");
+            const agent = {
+                https: tunnel.httpsOverHttp({
+                    proxy: {
+                        host: process.env.TG_PROXY_HOST,
+                        port: process.env.TG_PROXY_PORT * 1
+                    }
+                })
+            }
+            Object.assign(options, { agent })
+        }
+        $.get(options, async (err, resp, data) => {
+            try {
+                if (err) {
+                } else {
+                    if (data) data = JSON.parse(data)
+                }
+            } catch (e) {
+                // $.logErr(e, resp)
+            } finally {
+                resolve(data || []);
+            }
+        })
+        await $.wait(10000)
+        resolve();
+    })
+}
 isRequest ? getToken() : main();
 
 

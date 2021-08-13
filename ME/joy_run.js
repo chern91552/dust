@@ -1,8 +1,8 @@
 /*
-Last Modified time: 2021-6-6 21:22:37
+Last Modified time: 2021-8-13 
 宠汪汪邀请助力与赛跑助力脚本，感谢github@Zero-S1提供帮助
 活动入口：京东APP我的-更多工具-宠汪汪
-token时效很短，几个小时就失效了,闲麻烦的放弃就行
+token时效很短，几个小时就失效了（大概五个小时）,闲麻烦的放弃就行
 每天拿到token后，可一次性运行完毕即可。
 互助码friendPin是京东用户名，不是昵称（可在京东APP->我的->设置 查看获得）
 token获取途径：
@@ -11,6 +11,7 @@ token获取途径：
 脚本里面有内置提供的friendPin，如果你没有修改脚本或者BoxJs处填写自己的互助码，会默认给脚本内置的助力。
 
 docker 设置环境变量 JOY_RUN_HELP_MYSELF 为true,则开启账号内部互助.默认关闭(即给脚本作者内置的助力).
+
 分别读取chern91552、zero205、he1pu仓库token并判断是否有效
 已知bug：非第一次运行脚本时，可能无法判断token是否有效
 
@@ -26,7 +27,7 @@ hostname = draw.jdfcloud.com
 ===================Quantumult X=====================
 [task_local]
 # 宠汪汪邀请助力与赛跑助力
-45 10,14,19 * * * jd_joy_run.js, tag=宠汪汪邀请助力与赛跑助力, img-url=https://raw.githubusercontent.com/58xinian/icon/master/jdcww.png, enabled=true
+45 12,14,19 * * * jd_joy_run.js, tag=宠汪汪邀请助力与赛跑助力, img-url=https://raw.githubusercontent.com/58xinian/icon/master/jdcww.png, enabled=true
 [rewrite_local]
 # 宠汪汪助力更新Token
 ^https:\/\/draw\.jdfcloud\.com(\/mirror)?\/\/api\/user\/addUser\?code= url script-response-body jd_joy_run.js

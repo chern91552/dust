@@ -134,14 +134,14 @@ testshow='true';
   }
   console.log(`打印token：${$.LKYLToken ? $.LKYLToken : '暂无token'}\n`)
   if($.LKYLToken){
-      for (let i = 0; i < cookiesArr.length; i++) {
+    for (let i = 0; i < cookiesArr.length; i++) {
     if (cookiesArr[i]) {
       $.validate = '';
       // const zooFaker = require('./utils/JDJRValidator_Pure');
       // $.validate = await zooFaker.injectToRequest()
       if ($.isNode()) {
         if (process.env.JOY_RUN_HELP_MYSELF) {
-          console.log(`\n赛跑会先给账号内部助力,如您当前账户有剩下助力机会则为lx0301作者助力\n`)
+          console.log(`\n赛跑会先给账号内部助力,如您当前账户有剩下助力机会则为作者助力\n`)
           let my_run_pins = [];
           Object.values(jdCookieNode).filter(item => item.match(/pt_pin=([^; ]+)(?=;?)/)).map(item => my_run_pins.push(decodeURIComponent(item.match(/pt_pin=([^; ]+)(?=;?)/)[1])))
           run_pins = [...new Set(my_run_pins), [...getRandomArrayElements([...run_pins[0].split(',')], [...run_pins[0].split(',')].length)]];
@@ -183,6 +183,9 @@ testshow='true';
         }
       }
       await showMsg();
+    }
+    if(!$.LKYLLogin) {
+        break;
     }
   }
   }
@@ -382,7 +385,7 @@ function enterRoom(invitePin) {
     headers['Content-Type'] = "application/json";
     let opt = {
       // url: "//jdjoy.jd.com/common/pet/getPetTaskConfig?reqSource=h5",
-      url: `//draw.jdfcloud.com/common/pet/enterRoom/h5?reqSource=h5&invitePin=${encodeURI(invitePin)}&inviteSource=task_invite&shareSource=weapp&inviteTimeStamp=${Date.now()}&invokeKey=qRKHmL4sna8ZOP9F`,
+      url: `//draw.jdfcloud.com/common/pet/enterRoom/h5?reqSource=h5&invitePin=${encodeURI(invitePin)}&inviteSource=task_invite&shareSource=weapp&inviteTimeStamp=${Date.now()}&invokeKey=ztmFUCxcPMNyUq0P`,
       method: "GET",
       data: {},
       credentials: "include",
@@ -417,7 +420,7 @@ function helpInviteFriend(friendPin) {
     headers.LKYLToken = $.LKYLToken;
     let opt = {
       // url: "//jdjoy.jd.com/common/pet/getPetTaskConfig?reqSource=h5",
-      url: `//draw.jdfcloud.com/common/pet/helpFriend?friendPin=${encodeURI(friendPin)}&reqSource=h5&invokeKey=qRKHmL4sna8ZOP9F`,
+      url: `//draw.jdfcloud.com/common/pet/helpFriend?friendPin=${encodeURI(friendPin)}&reqSource=h5&invokeKey=ztmFUCxcPMNyUq0P`,
       method: "GET",
       data: {},
       credentials: "include",
@@ -489,7 +492,7 @@ function combatHelp(friendPin) {
     headers.LKYLToken = $.LKYLToken;
     let opt = {
       // url: "//jdjoy.jd.com/common/pet/getPetTaskConfig?reqSource=h5",
-      url: `//draw.jdfcloud.com//common/pet/combat/help?friendPin=${encodeURI(friendPin)}&invokeKey=qRKHmL4sna8ZOP9F`,
+      url: `//draw.jdfcloud.com//common/pet/combat/help?friendPin=${encodeURI(friendPin)}&invokeKey=ztmFUCxcPMNyUq0P`,
       method: "GET",
       data: {},
       credentials: "include",
@@ -528,7 +531,7 @@ function combatDetail(invitePin) {
     headers.LKYLToken = $.LKYLToken;
     let opt = {
       // url: "//jdjoy.jd.com/common/pet/getPetTaskConfig?reqSource=h5",
-      url: `//draw.jdfcloud.com/common/pet/combat/detail/v2?help=true&inviterPin=${encodeURI(invitePin)}&reqSource=h5&invokeKey=qRKHmL4sna8ZOP9F`,
+      url: `//draw.jdfcloud.com/common/pet/combat/detail/v2?help=true&inviterPin=${encodeURI(invitePin)}&reqSource=h5&invokeKey=ztmFUCxcPMNyUq0P`,
       method: "GET",
       data: {},
       credentials: "include",
@@ -594,16 +597,20 @@ async function testtoken(){
     if(!token){
     	token= await getNetToken('https://raw.fastgit.org/chern91552/updateteam/master/ShareCodes/joy_run.json');
     }
-    console.log(`从chern91552仓库获取到的token为${token}`);
-    tokenarr[tokenarr.length]=token;
+    //if(token&&token.length>2){
+        console.log(`从chern91552仓库获取到的token为${token}`);
+        tokenarr[tokenarr.length]=token;
+    //}
     token= await getNetToken('https://raw.githubusercontent.com/zero205/updateTeam/main/shareCodes/lkyl.json');
-    if(!token){
+    if(token&&token.length>2){
     	token= await getNetToken('https://raw.fastgit.org/zero205/updateTeam/main/shareCodes/lkyl.json');
     }
-    console.log(`从zero205仓库获取到的token为${token}`);
-    tokenarr[tokenarr.length]=token;
+    if(token){
+        console.log(`从zero205仓库获取到的token为${token}`);
+        tokenarr[tokenarr.length]=token;
+    }
     let readTokenRes = await getNetToken('https://raw.githubusercontent.com/he1pu/JDHelp/main/joy_run_token.json');
-    readTokenRes && (readTokenRes.code === 200)&&(tokenarr.length=tokenarr.push(readTokenRes.data[0]));
+    readTokenRes && (readTokenRes.code === 200)&&(tokenarr.length=tokenarr.push(readTokenRes.data[0]))&&(console.log(`从he1pu仓库获取到的token为${readTokenRes.data[0]}`));
     /*console.log(`tokenarr.length=${tokenarr.length}`);
     console.log(`tokenarr[0]=${tokenarr[0]}`);
     console.log(`tokenarr[1]=${tokenarr[1]}`);
@@ -627,7 +634,7 @@ async function testtoken(){
                 }
             }
             else if(petRaceResult === 'help_full' || petRaceResult === 'participate'){
-                    console.log(`无法判断token是否失效，默认有效，若失效可自行修改环境变量JOY_RUN_TOKEN`);
+                    console.log(`无法判断token是否失效，默认有效，若失效可自行修改环境变量\nexport JOY_RUN_TOKEN=""`);
                     return;
                 }
             console.log(`宠汪汪token可用`);

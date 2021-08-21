@@ -131,7 +131,7 @@ async function main() {
   console.log(`打印token：${$.LKYLToken ? $.LKYLToken : '暂无token'}\n`)
   if (!$.LKYLToken) {
     $.msg($.name, '【提示】请先获取来客有礼宠汪汪token', "iOS用户微信搜索'来客有礼'小程序\n点击底部的'发现'Tab\n即可获取Token");
-    // return;
+     return;
   }
   //await getFriendPins();
     if($.LKYLToken){
@@ -449,7 +449,7 @@ async function run(run_pins) {
       console.log(`自己账号，跳过`);
       continue
     }
-    const combatDetailRes = await combatDetail(item);
+    combatDetailRes = await combatDetail(item);
     const { petRaceResult } = combatDetailRes.data;
     testshow &&console.log(`petRaceResult ${petRaceResult}`);
     if (petRaceResult === 'help_full') {
@@ -457,7 +457,7 @@ async function run(run_pins) {
       break;
     } else if (petRaceResult === 'can_help') {
       testshow &&console.log(`开始赛跑助力好友 ${item}`)
-      const LKYL_DATA = await combatHelp(item);
+      LKYL_DATA = await combatHelp(item);
       if (LKYL_DATA.errorCode === 'L0001' && !LKYL_DATA.success) {
         console.log('来客有礼宠汪汪token失效');
         $.setdata('', 'jdJoyRunToken');
@@ -500,7 +500,7 @@ function combatHelp(friendPin) {
           $.log('API请求失败')
           $.logErr(JSON.stringify(err));
         } else {
-          $.log(`赛跑助力结果${data}`);
+          testshow &&$.log(`赛跑助力结果${data}`);
           data = JSON.parse(data);
           // {"errorCode":"help_ok","errorMessage":null,"currentTime":1600479266133,"data":{"rewardNum":5,"helpStatus":"help_ok","newUser":false},"success":true}
           if (data.errorCode === 'help_ok' && data.data.helpStatus === 'help_ok') {

@@ -1,5 +1,5 @@
 {
-  "name": "晶彩重写订阅",
+  "name": "晶彩天气重写订阅",
   "author": "elecV2p",
   "mitmhost": ["tq.xunsl.com"],
   "rewrite": [
